@@ -6,8 +6,7 @@ steps:
       - -c
       - |
         set -ex
-        builddirs=(${_BUILD_DIRS})
-        for img in ${builddirs[@]}; do
+        for img in ${_BUILD_DIRS}; do
           docker build -t ${_REGISTRY}/${img}:latest ./${img}
           docker push ${_REGISTRY}/${img}:latest
         done
@@ -23,11 +22,10 @@ steps:
       - -c
       - |
         set -ex
-        builddirs=(${_BUILD_DIRS})
-        for img in ${builddirs[@]}; do
+        for img in ${_BUILD_DIRS}; do
           cosign sign ${_REGISTRY}/${img}:latest
         done
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
-  _BUILD_DIRS: 'gotip firebase'
+  _BUILD_DIRS: 'firebase'
 timeout: '900s' # gotip build is slow
