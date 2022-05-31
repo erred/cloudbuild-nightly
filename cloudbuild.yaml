@@ -27,5 +27,5 @@ steps:
         done
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
-  _BUILD_DIRS: 'firebase'
+  _BUILD_DIRS: 'gotip firebase'
 timeout: '900s' # gotip build is slow
