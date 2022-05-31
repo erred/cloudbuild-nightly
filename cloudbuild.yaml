@@ -1,3 +1,4 @@
+timeout: '900s' # gotip build is slow
 steps:
   - id: build-push
     name: 'gcr.io/cloud-builders/docker'
