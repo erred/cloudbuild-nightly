@@ -1,4 +1,3 @@
-timeout: '900s' # gotip build is slow
 steps:
   - id: build-push
     name: 'gcr.io/cloud-builders/docker'
@@ -7,9 +6,10 @@ steps:
       - -c
       - |
         set -ex
-        for img in gotip firebase; do
-          docker build -t us-central1-docker.pkg.dev/com-seankhliao/build/${img}:latest ./${img}
-          docker push us-central1-docker.pkg.dev/com-seankhliao/build/${img}:latest
+        builddirs=(${_BUILD_DIRS})
+        for img in ${builddirs[@]}; do
+          docker build -t ${_REGISTRY}/${img}:latest ./${img}
+          docker push ${_REGISTRY}/${img}:latest
         done
 
   - id: sign-latest
@@ -22,6 +22,12 @@ steps:
     args:
       - -c
       - |
-        for img in gotip firebase; do
-          cosign sign us-central1-docker.pkg.dev/com-seankhliao/build/${img}:latest
+        set -ex
+        builddirs=(${_BUILD_DIRS})
+        for img in ${builddirs[@]}; do
+          cosign sign ${_REGISTRY}/${img}:latest
         done
+substitutions:
+  _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
+  _BUILD_DIRS: 'gotip firebase'
+timeout: '900s' # gotip build is slow
