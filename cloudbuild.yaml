@@ -1,7 +1,7 @@
 steps:
   - id: build-push
     name: 'gcr.io/cloud-builders/docker'
-    entrypoint: /bin/sh
+    entrypoint: sh
     args:
       - -c
       - |
@@ -17,7 +17,7 @@ steps:
       - 'TUF_ROOT=/tmp' # cosign tries to create $HOME/.sigstore
       - 'COSIGN_EXPERIMENTAL=1'
       - 'GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com'
-    entrypoint: /bin/sh
+    entrypoint: sh
     args:
       - -c
       - |
