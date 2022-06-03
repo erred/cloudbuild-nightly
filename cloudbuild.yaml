@@ -25,7 +25,9 @@ steps:
         for img in ${_BUILD_DIRS}; do
           cosign sign ${_REGISTRY}/${img}:latest
         done
+
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
   _BUILD_DIRS: 'gotip firebase'
-timeout: '900s' # gotip build is slow
+
+timeout: '1200s' # gotip build is slow
