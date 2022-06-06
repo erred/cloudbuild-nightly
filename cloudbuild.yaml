@@ -23,7 +23,7 @@ steps:
       - |
         set -ex
         for img in ${_BUILD_DIRS}; do
-          cosign sign ${_REGISTRY}/${img}:latest
+          cosign sign --force ${_REGISTRY}/${img}:latest
         done
 
 substitutions:
