@@ -1,33 +1,55 @@
 steps:
-  - id: build-push
-    name: 'gcr.io/cloud-builders/docker'
-    entrypoint: sh
+  - id: build-push-gotip
+    waitFor: ['-']
+    name: 'gcr.io/kaniko-project/executor'
     args:
-      - -c
-      - |
-        set -ex
-        for img in ${_BUILD_DIRS}; do
-          docker build -t ${_REGISTRY}/${img}:latest ./${img}
-          docker push ${_REGISTRY}/${img}:latest
-        done
-
-  - id: sign-latest
+      - '--cache'
+      - '--cache-ttl=168h'
+      - '--context=gotip'
+      - '--destination=${_REGISTRY}/gotip:latest'
+      - '--image-name-with-digest-file=.image.gotip.txt'
+      - '--reproducible'
+      - '--single-snapshot'
+      - '--use-new-run'
+      - '--ignore-var-run'
+  - id: sign-gotip
+    waitFor: ['build-push-gotip']
     name: 'gcr.io/projectsigstore/cosign'
+    entrypoint: sh
     env:
       - 'TUF_ROOT=/tmp' # cosign tries to create $HOME/.sigstore
       - 'COSIGN_EXPERIMENTAL=1'
       - 'GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com'
-    entrypoint: sh
     args:
-      - -c
-      - |
-        set -ex
-        for img in ${_BUILD_DIRS}; do
-          cosign sign --force ${_REGISTRY}/${img}:latest
-        done
+      - '-c'
+      - 'cosign sign --force $(head -n 1 .image.gotip.txt)'
+
+  - id: build-push-firebase
+    waitFor: ['-']
+    name: 'gcr.io/kaniko-project/executor'
+    args:
+      - '--cache'
+      - '--cache-ttl=168h'
+      - '--context=firebase'
+      - '--destination=${_REGISTRY}/firebase:latest'
+      - '--image-name-with-digest-file=.image.firebase.txt'
+      - '--reproducible'
+      - '--single-snapshot'
+      - '--use-new-run'
+      - '--ignore-var-run'
+  - id: sign-firebase
+    waitFor: ['build-push-firebase']
+    name: 'gcr.io/projectsigstore/cosign'
+    entrypoint: sh
+    env:
+      - 'TUF_ROOT=/tmp' # cosign tries to create $HOME/.sigstore
+      - 'COSIGN_EXPERIMENTAL=1'
+      - 'GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com'
+    args:
+      - '-c'
+      - 'cosign sign --force $(head -n 1 .image.firebase.txt)'
 
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
-  _BUILD_DIRS: 'gotip firebase'
 
 timeout: '1200s' # gotip build is slow
