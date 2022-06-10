@@ -52,4 +52,4 @@ steps:
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
 
-timeout: '1500s' # 25m gotip build is slow
+timeout: '1800s' # 30m gotip build is slow
