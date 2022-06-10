@@ -10,7 +10,7 @@ steps:
       - '--image-name-with-digest-file=.image.gotip.txt'
       - '--reproducible'
       - '--single-snapshot'
-      - '--use-new-run'
+      - '--snapshotMode=redo'
       - '--ignore-var-run'
   - id: sign-gotip
     waitFor: ['build-push-gotip']
@@ -35,7 +35,7 @@ steps:
       - '--image-name-with-digest-file=.image.firebase.txt'
       - '--reproducible'
       - '--single-snapshot'
-      - '--use-new-run'
+      - '--snapshotMode=redo'
       - '--ignore-var-run'
   - id: sign-firebase
     waitFor: ['build-push-firebase']
