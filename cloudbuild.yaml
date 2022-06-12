@@ -1,55 +1,55 @@
 steps:
   - id: build-push-gotip
-    waitFor: ['-']
-    name: 'gcr.io/kaniko-project/executor'
+    waitFor: ["-"]
+    name: "gcr.io/kaniko-project/executor"
     args:
-      - '--cache'
-      - '--cache-ttl=168h'
-      - '--context=gotip'
-      - '--destination=${_REGISTRY}/gotip:latest'
-      - '--image-name-with-digest-file=.image.gotip.txt'
-      - '--reproducible'
-      - '--single-snapshot'
-      - '--snapshotMode=redo'
-      - '--ignore-var-run'
+      - "--cache"
+      - "--cache-ttl=168h"
+      - "--context=gotip"
+      - "--destination=${_REGISTRY}/gotip:latest"
+      - "--image-name-with-digest-file=.image.gotip.txt"
+      - "--reproducible"
+      - "--single-snapshot"
+      - "--snapshotMode=redo"
+      - "--ignore-var-run"
   - id: sign-gotip
-    waitFor: ['build-push-gotip']
-    name: 'gcr.io/projectsigstore/cosign'
+    waitFor: ["build-push-gotip"]
+    name: "gcr.io/projectsigstore/cosign"
     entrypoint: sh
     env:
-      - 'TUF_ROOT=/tmp' # cosign tries to create $HOME/.sigstore
-      - 'COSIGN_EXPERIMENTAL=1'
-      - 'GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com'
+      - "TUF_ROOT=/tmp" # cosign tries to create $HOME/.sigstore
+      - "COSIGN_EXPERIMENTAL=1"
+      - "GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com"
     args:
-      - '-c'
-      - 'cosign sign --force $(head -n 1 .image.gotip.txt)'
+      - "-c"
+      - "cosign sign --force $(head -n 1 .image.gotip.txt)"
 
   - id: build-push-firebase
-    waitFor: ['-']
-    name: 'gcr.io/kaniko-project/executor'
+    waitFor: ["-"]
+    name: "gcr.io/kaniko-project/executor"
     args:
-      - '--cache'
-      - '--cache-ttl=168h'
-      - '--context=firebase'
-      - '--destination=${_REGISTRY}/firebase:latest'
-      - '--image-name-with-digest-file=.image.firebase.txt'
-      - '--reproducible'
-      - '--single-snapshot'
-      - '--snapshotMode=redo'
-      - '--ignore-var-run'
+      - "--cache"
+      - "--cache-ttl=168h"
+      - "--context=firebase"
+      - "--destination=${_REGISTRY}/firebase:latest"
+      - "--image-name-with-digest-file=.image.firebase.txt"
+      - "--reproducible"
+      - "--single-snapshot"
+      - "--snapshotMode=redo"
+      - "--ignore-var-run"
   - id: sign-firebase
-    waitFor: ['build-push-firebase']
-    name: 'gcr.io/projectsigstore/cosign'
+    waitFor: ["build-push-firebase"]
+    name: "gcr.io/projectsigstore/cosign"
     entrypoint: sh
     env:
-      - 'TUF_ROOT=/tmp' # cosign tries to create $HOME/.sigstore
-      - 'COSIGN_EXPERIMENTAL=1'
-      - 'GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com'
+      - "TUF_ROOT=/tmp" # cosign tries to create $HOME/.sigstore
+      - "COSIGN_EXPERIMENTAL=1"
+      - "GOOGLE_SERVICE_ACCOUNT_NAME=cosign-signer@com-seankhliao.iam.gserviceaccount.com"
     args:
-      - '-c'
-      - 'cosign sign --force $(head -n 1 .image.firebase.txt)'
+      - "-c"
+      - "cosign sign --force $(head -n 1 .image.firebase.txt)"
 
 substitutions:
   _REGISTRY: us-central1-docker.pkg.dev/com-seankhliao/build
 
-timeout: '1800s' # 30m gotip build is slow
+timeout: "1800s" # 30m gotip build is slow
