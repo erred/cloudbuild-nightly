@@ -1,6 +1,4 @@
 FROM golang:alpine AS build
-ENV GOMEMLIMIT=3758096384 \
-    GOGC=off
 RUN apk add --no-cache bash gcc git musl-dev && \
     go install golang.org/dl/gotip@latest && \
     gotip download && \
@@ -9,9 +7,7 @@ RUN apk add --no-cache bash gcc git musl-dev && \
     GOBIN=/root/sdk/gotip/bin gotip install github.com/google/ko@latest
 
 FROM alpine
-ENV PATH=/root/sdk/gotip/bin:/root/go/bin:$PATH \
-    GOMEMLIMIT=3758096384 \
-    GOGC=off
+ENV PATH=/root/sdk/gotip/bin:/root/go/bin:$PATH
 COPY --from=build /root/sdk/gotip /root/sdk/gotip
 WORKDIR /workspace
 ENTRYPOINT [ "go" ]
