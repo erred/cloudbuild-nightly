@@ -3,8 +3,6 @@ steps:
     waitFor: ["-"]
     name: "gcr.io/kaniko-project/executor"
     args:
-      - "--cache"
-      - "--cache-ttl=168h"
       - "--context=gotip"
       - "--destination=${_REGISTRY}/gotip:latest"
       - "--image-name-with-digest-file=.image.gotip.txt"
@@ -28,8 +26,6 @@ steps:
     waitFor: ["-"]
     name: "gcr.io/kaniko-project/executor"
     args:
-      - "--cache"
-      - "--cache-ttl=168h"
       - "--context=firebase"
       - "--destination=${_REGISTRY}/firebase:latest"
       - "--image-name-with-digest-file=.image.firebase.txt"
