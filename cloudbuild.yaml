@@ -1,6 +1,5 @@
 steps:
   - id: build-push-gotip
-    waitFor: ["-"]
     name: "gcr.io/kaniko-project/executor"
     args:
       - "--context=gotip"
@@ -11,7 +10,6 @@ steps:
       - "--snapshotMode=redo"
       - "--ignore-var-run"
   - id: sign-gotip
-    waitFor: ["build-push-gotip"]
     name: "gcr.io/projectsigstore/cosign"
     entrypoint: sh
     env:
@@ -23,7 +21,6 @@ steps:
       - "cosign sign --force $(head -n 1 .image.gotip.txt)"
 
   - id: build-push-firebase
-    waitFor: ["-"]
     name: "gcr.io/kaniko-project/executor"
     args:
       - "--context=firebase"
@@ -34,7 +31,6 @@ steps:
       - "--snapshotMode=redo"
       - "--ignore-var-run"
   - id: sign-firebase
-    waitFor: ["build-push-firebase"]
     name: "gcr.io/projectsigstore/cosign"
     entrypoint: sh
     env:
@@ -50,6 +46,7 @@ substitutions:
 
 options:
   env:
-    - GOGC=400
+    - GOMEMLIMIT=3680MiB
+    - GOGC=off
 
 timeout: "1800s" # 30m gotip build is slow
