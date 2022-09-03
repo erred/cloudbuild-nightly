@@ -47,6 +47,6 @@ substitutions:
 options:
   env:
     - GOMEMLIMIT=3680MiB
-    - GOGC=off
+    - GOGC=400
 
 timeout: "1800s" # 30m gotip build is slow
