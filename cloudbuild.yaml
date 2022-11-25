@@ -7,8 +7,9 @@ steps:
       - "--image-name-with-digest-file=.image.gotip.txt"
       - "--reproducible"
       - "--single-snapshot"
-      - "--snapshotMode=redo"
+      - "--snapshot-mode=redo"
       - "--ignore-var-run"
+
   - id: sign-gotip
     name: "gcr.io/projectsigstore/cosign"
     entrypoint: sh
