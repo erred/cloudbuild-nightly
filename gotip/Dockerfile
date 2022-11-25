@@ -5,7 +5,8 @@ RUN apk add --no-cache bash curl gcc git musl-dev && \
     go install golang.org/dl/gotip@latest && \
     gotip download && \
     rm -rf /root/sdk/gotip/pkg/linux_* && \
-    curl -Lo /usr/local/bin/skaffold https://storage.googleapis.com/skaffold/builds/latest/skaffold-linux-amd64
+    curl -Lo /usr/local/bin/skaffold https://storage.googleapis.com/skaffold/builds/latest/skaffold-linux-amd64 && \
+    chmod +x /usr/local/bin/skaffold
 
 FROM alpine
 RUN apk add --no-cache git
